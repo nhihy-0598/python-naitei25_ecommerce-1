@@ -13,7 +13,7 @@ from core.models import Vendor
 from django.core.paginator import Paginator
 from django.db.models import Q
 from core.models import Category
-
+import core.constants as C
 from core.constants import TAG_LIMIT
 from core.models import Coupon, Product, Category, Vendor, CartOrder, CartOrderProducts, Image, ProductReview, Address
 # Create your views here.
@@ -25,7 +25,7 @@ from .models import Product, Image
 
 def index(request):
     # Base query: các sản phẩm đã publish
-    base_query = Product.objects.filter(product_status="published").order_by("-pid")
+    base_query = Product.objects.filter(product_status=C.STATUS_PUBLISHED).order_by("-pid")
 
     # Featured products
     products = base_query.filter(featured=True)
@@ -47,18 +47,14 @@ def index(request):
     }
 
     # Lấy ảnh đại diện của từng product (chỉ cho featured)
-    product_images = {
-        p.pid: (Image.objects.filter(
+    product_images = {}
+    for p in products:
+        img = Image.objects.filter(
             object_type='Product',
             object_id=p.pid,
             is_primary=True
-        ).first().image.url if Image.objects.filter(
-            object_type='Product',
-            object_id=p.pid,
-            is_primary=True
-        ).exists() else None)
-        for p in products
-    }
+        ).first()
+        product_images[p.pid] = img.image.url if img else None
 
     # Gộp context lại
     context = {
@@ -244,7 +240,20 @@ def search_view(request):
     return render(request, "core/search.html")
 
 def product_detail_view(request, pid):
-    return render(request, "core/product-detail.html")
+    #product = Product.objects.get(pid = pid)
+    # Lấy product theo pid, nếu không tìm thấy -> raise 404
+    product = get_object_or_404(Product, pid=pid)
+    
+    address = None
+    if request.user.is_authenticated:
+        address = Address.objects.filter(user=request.user).first()
+
+    context = {
+        "p": product,
+        "address": address
+    }
+    
+    return render(request, "core/product-detail.html", context)
 
 def vendor_list_view(request):
     # Get search parameter
@@ -359,3 +368,4 @@ def get_sorting_url(request, sort_by, order):
     params['sort'] = sort_by
     params['order'] = order
     return f"{request.path}?{params.urlencode()}"
+    
