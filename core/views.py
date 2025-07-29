@@ -16,3 +16,6 @@ def customer_dashboard(request):
 
 def search_view(request):
     return render(request, "core/search.html")
+
+def product_detail_view (request):
+    return render(request, "core/product-detail.html")
