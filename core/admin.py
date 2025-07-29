@@ -14,7 +14,7 @@ class AddressAdmin(admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('object_type', 'object_id', 'url', 'is_primary', 'uploaded_at')
+    list_display = ('object_type', 'object_id', 'image', 'is_primary', 'uploaded_at')
     list_filter = ('object_type', 'is_primary')
     search_fields = ('object_id',)
 

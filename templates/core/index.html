@@ -39,7 +39,7 @@
                     </div>
                 </section>
                 <!--End hero-->
-                
+
                 <section class="product-tabs section-padding position-relative">
                     <div class="section-title style-2">
                         <h3>{% trans "Popular Products" %}</h3>
@@ -68,152 +68,20 @@
                         </ul>
                     </div>
                     <!--End nav-tabs-->
-                    
+
                     <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
-                            <div class="row product-grid-4">
-                                <!-- Mock Products -->
-                                <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
-                                    <div class="product-cart-wrap mb-30">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="#">
-                                                    <img class="default-img" src="{% static 'assets/imgs/shop/product-1-1.jpg' %}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
-                                                    <img class="hover-img" src="{% static 'assets/imgs/shop/product-1-2.jpg' %}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="{% trans 'Add To Wishlist' %}" class="action-btn add-to-wishlist" data-product-item="1"><i class="fi-rs-heart"></i></a>
-                                                <a href="#" class="action-btn"><i class="fi-rs-eye"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="hot">-15%</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="#">{% trans "Electronics" %}</a>
-                                            </div>
-                                            <h2><a href="#">{% trans "Wireless Headphones Premium Quality" %}</a></h2>
-                                            <div class="product-rate-cover">
-                                                <i class="fas fa-star text-warning"></i>
-                                                <span class="font-small ml-5 text-muted"> (5)</span>
-                                            </div>
-                                            <div>
-                                                <span class="font-small text-muted">{% trans "By" %} <a href="#">{% trans "Tech Store" %}</a></span>
-                                            </div>
-                                            <div class="product-card-bottom">
-                                                <div class="product-price">
-                                                    <span>$</span> <span class="current-product-price-1">99.99</span>
-                                                    <span class="old-price">$119.99</span>
-                                                </div>
-                                                <div class="add-cart">
-                                                    <div class="d-flex">
-                                                        <button class="add add-to-cart-btn" data-index="1" style="border: none;"><i class="fi-rs-shopping-cart mr-5"></i>{% trans "Add" %}</button>
-                                                        <button style="border: none; background: none;" class="add-to-wishlist" data-product-item="1"><i class="fi-rs-heart"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
-                                    <div class="product-cart-wrap mb-30">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="#">
-                                                    <img class="default-img" src="{% static 'assets/imgs/shop/product-2-1.jpg' %}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
-                                                    <img class="hover-img" src="{% static 'assets/imgs/shop/product-2-2.jpg' %}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="{% trans 'Add To Wishlist' %}" class="action-btn add-to-wishlist" data-product-item="2"><i class="fi-rs-heart"></i></a>
-                                                <a href="#" class="action-btn"><i class="fi-rs-eye"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="sale">{% trans "Sale" %}</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="#">{% trans "Snack" %}</a>
-                                            </div>
-                                            <h2><a href="#">{% trans "Seeds of Change Organic Quinoa Brown & Red Rice" %}</a></h2>
-                                            <div class="product-rate-cover">
-                                                <div class="product-rate d-inline-block">
-                                                    <div class="product-rating" style="width: 90%"></div>
-                                                </div>
-                                                <span class="font-small ml-5 text-muted"> (4.0)</span>
-                                            </div>
-                                            <div>
-                                                <span class="font-small text-muted">{% trans "By" %} <a href="#">{% trans "ECOMFood" %}</a></span>
-                                            </div>
-                                            <div class="product-card-bottom">
-                                                <div class="product-price">
-                                                    <span>$28.85</span>
-                                                    <span class="old-price">$32.8</span>
-                                                </div>
-                                                <div class="add-cart">
-                                                    <a class="add" href="#"><i class="fi-rs-shopping-cart mr-5"></i>{% trans "Add" %} </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
-                                    <div class="product-cart-wrap mb-30">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="#">
-                                                    <img class="default-img" src="{% static 'assets/imgs/shop/product-3-1.jpg' %}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
-                                                    <img class="hover-img" src="{% static 'assets/imgs/shop/product-3-2.jpg' %}" alt="" style="height: 280px; width: 280px; object-fit: cover;" />
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="{% trans 'Add To Wishlist' %}" class="action-btn add-to-wishlist" data-product-item="3"><i class="fi-rs-heart"></i></a>
-                                                <a href="#" class="action-btn"><i class="fi-rs-eye"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="new">{% trans "New" %}</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            <div class="product-category">
-                                                <a href="#">{% trans "Hodo Foods" %}</a>
-                                            </div>
-                                            <h2><a href="#">{% trans "All Natural Italian-Style Chicken Meatballs" %}</a></h2>
-                                            <div class="product-rate-cover">
-                                                <div class="product-rate d-inline-block">
-                                                    <div class="product-rating" style="width: 80%"></div>
-                                                </div>
-                                                <span class="font-small ml-5 text-muted"> (3.5)</span>
-                                            </div>
-                                            <div>
-                                                <span class="font-small text-muted">{% trans "By" %} <a href="#">{% trans "Stouffer" %}</a></span>
-                                            </div>
-                                            <div class="product-card-bottom">
-                                                <div class="product-price">
-                                                    <span>$52.85</span>
-                                                    <span class="old-price">$55.8</span>
-                                                </div>
-                                                <div class="add-cart">
-                                                    <a class="add" href="#"><i class="fi-rs-shopping-cart mr-5"></i>{% trans "Add" %} </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--End product-grid-4-->
-                        </div>
-                        <!--End tab one - Các tab khác có cấu trúc tương tự-->
+                      {% include "core/product_tab.html" with products=products tab_id="tab-one" active=True %}
+                      {% include "core/product_tab.html" with products=products_milk tab_id="tab-two" %}
+                      {% include "core/product_tab.html" with products=products_tea tab_id="tab-three" %}
+                      {% include "core/product_tab.html" with products=products_pet tab_id="tab-four" %}
+                      {% include "core/product_tab.html" with products=products_meat tab_id="tab-five" %}
+                      {% include "core/product_tab.html" with products=products_veg tab_id="tab-six" %}
+                      {% include "core/product_tab.html" with products=products_fruit tab_id="tab-seven" %}
                     </div>
                     <!--End tab-content-->
                 </section>
                 <!--Products Tabs-->
-                
+
                 <section class="section-padding pb-5">
                     <div class="section-title">
                         <h3 class="">{% trans "Deals Of The Day" %}</h3>
@@ -260,7 +128,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xl-3 col-lg-4 col-md-6">
                             <div class="product-cart-wrap style-2">
                                 <div class="product-img-action-wrap">
@@ -301,7 +169,7 @@
                     </div>
                 </section>
                 <!--End Deals-->
-                
+
                 <section class="banners">
                     <div class="row">
                         <div class="col-lg-4 col-md-6">
@@ -339,7 +207,7 @@
                 </section>
                 <!--End banners-->
             </div>
-            
+
             <div class="col-lg-1-5 primary-sidebar sticky-sidebar pt-30">
                 <div class="sidebar-widget widget-category-2 mb-30">
                     <h5 class="section-title style-1 mb-30">{% trans "Category" %}</h5>
@@ -361,7 +229,7 @@
             </div>
         </div>
     </div>
-    
+
     <section class="popular-categories section-padding">
         <div class="container">
             <div class="section-title">
@@ -429,7 +297,7 @@
         </div>
     </section>
     <!--End category slider-->
-    
+
     <section class="section-padding mb-30">
         <div class="container">
             <div class="row">
@@ -458,7 +326,7 @@
                         </article>
                     </div>
                 </div>
-                
+
                 <div class="col-xl-3 col-lg-4 col-md-6 mb-sm-5 mb-md-0 d-none d-lg-block">
                     <h4 class="section-title style-1 mb-30 animated animated">{% trans "Recently added" %}</h4>
                     <div class="product-list-small animated animated">
@@ -484,7 +352,7 @@
                         </article>
                     </div>
                 </div>
-                
+
                 <div class="col-xl-3 col-lg-4 col-md-6 mb-sm-5 mb-md-0 d-none d-xl-block">
                     <h4 class="section-title style-1 mb-30 animated animated">{% trans "Top Rated" %}</h4>
                     <div class="product-list-small animated animated">

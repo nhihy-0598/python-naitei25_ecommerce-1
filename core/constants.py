@@ -38,7 +38,7 @@ RETURN_STATUS_CHOICES = (
     ('approved', 'Approved'),
     ('rejected', 'Rejected'),
     ('completed', 'Completed'),
-) 
+)
 
 PRODUCT_STATUS_CHOICES = (
     ('draft', 'Draft'),
@@ -90,3 +90,4 @@ DAY_RETURN = 3
 AUTHENTIC_RATING =5.0
 MIN=0
 SHIP_ON_TIME =100
+TAG_LIMIT = 6

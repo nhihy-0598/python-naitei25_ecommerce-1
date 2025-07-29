@@ -27,7 +27,7 @@
                                         <h1 class="mb-5">{% trans "Login" %}</h1>
                                         <p class="mb-30">{% trans "Don't have an account?" %} <a href="{% url 'userauths:sign-up' %}">{% trans "Create here" %}</a></p>
                                     </div>
-                                    <form method="POST"> 
+                                    <form method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <input type="text" required name="email" placeholder="{% trans 'Username or Email *' %}" />
