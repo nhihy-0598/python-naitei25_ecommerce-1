@@ -31,6 +31,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'core.User'
+
 
 # Application definition
 
@@ -42,7 +44,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'core',
-    'userauths'
+    'userauths',
+    'django_ckeditor_5',
+    'taggit',
 ]
 
 MIDDLEWARE = [

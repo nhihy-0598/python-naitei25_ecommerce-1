@@ -5,7 +5,8 @@ from django.conf import settings
 from taggit.managers import TaggableManager
 from django_ckeditor_5.fields import CKEditor5Field
 from django.utils import timezone
-
+from django.contrib.auth.models import AbstractUser
+from userauths.models import User
 # Create your models here.
 STATUS_CHOICE = (
     ("processing", "Processing"),
@@ -30,6 +31,40 @@ RATING = (
     (4,  "★★★★☆"),
     (5,  "★★★★★"),
 )
+ROLE_CHOICES = (
+        ('customer', 'Customer'),
+        ('vendor', 'Vendor'),
+        ('admin', 'Admin'),
+    )
+def user_directory_path(instance, filename):
+    return 'user_{0}/{1}'.format(instance.user.id, filename)
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    mobile = models.CharField(max_length=300, null=True)
+    address = models.CharField(max_length=100, null=True)
+    status = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = "Address"
+
+class Image(models.Model):
+    url = models.ImageField(upload_to='images/')
+    alt_text = models.CharField(max_length=255, null=True, blank=True)
+    object_type = models.CharField(max_length=50)  # e.g., 'Product', 'Category', 'Vendor'
+    object_id = models.CharField(max_length=50)    # e.g., pid, cid, vid
+    is_primary = models.BooleanField(default=False)
+    image_type = models.CharField(max_length=50, null=True, blank=True)  # thumbnail, cover, etc.
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Image"
+        verbose_name_plural = "Images"
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"{self.object_type} - {self.object_id}"
 
 class Vendor(models.Model):
     vid = models.CharField(max_length=100, primary_key=True)
