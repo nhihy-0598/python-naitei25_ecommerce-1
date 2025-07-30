@@ -27,7 +27,7 @@ def cart_view(request):
     else:
         messages.warning(request, "Your cart is empty")
         return redirect("core:index")
-    
+
 def add_to_cart(request):
     product_id = request.GET.get('id')
     qty = int(request.GET.get('qty', 1))
@@ -107,7 +107,7 @@ def update_cart(request):
 
 def ajax_add_review(request, pid):
     product = Product.objects.get(pk=pid)
-    user = request.user 
+    user = request.user
 
     review = ProductReview.objects.create(
         user=user,
@@ -166,13 +166,18 @@ def category_list_view(request):
 
 def category_product_list__view(request, cid):
     products = get_products_by_category(cid)
-    
+
     # Add reviews count to each product
     for product in products:
         product['reviews_count'] = product['reviews']['all']['count']
-    
+
     context = {
         "category": get_category_by_id(cid),
         "products": products,
     }
     return render(request, "core/category-product-list.html", context)
+def search_view(request):
+    return render(request, "core/search.html")
+
+def product_detail_view(request, pid):
+    return render(request, "core/product-detail.html")
