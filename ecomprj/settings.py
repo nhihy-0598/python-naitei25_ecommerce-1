@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'userauths',
     'django_ckeditor_5',
     'taggit',
-
 ]
 
 MIDDLEWARE = [

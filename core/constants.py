@@ -1,4 +1,22 @@
+# Constants and Choices for E-commerce Models
 
+# Order Status Choices
+STATUS_CHOICE = (
+    ("processing", "Processing"),
+    ("shipped", "Shipped"),
+    ("delivered", "Delivered"),
+)
+
+# Product Status Choices
+STATUS = (
+    ("draft", "Draft"),
+    ("disabled", "Disabled"),
+    ("rejected", "Rejected"),
+    ("in_review", "In Review"),
+    ("published", "Published"),
+)
+
+# Rating Choices
 RATING = (
     (1,  "★☆☆☆☆"),
     (2,  "★★☆☆☆"),
@@ -7,7 +25,7 @@ RATING = (
     (5,  "★★★★★"),
 )
 
-
+# User Role Choices
 ROLE_CHOICES = (
     ('customer', 'Customer'),
     ('vendor', 'Vendor'),

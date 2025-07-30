@@ -20,8 +20,6 @@ from .constants import ( RATING, RETURN_STATUS_CHOICES, PRODUCT_STATUS_CHOICES, 
 def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.user.id, filename)
 
-
-#ok
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     mobile = models.CharField(max_length=MAX_LENGTH_MOBILE , null=True, blank=True)
@@ -35,8 +33,7 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.address}"
-  
-#ok
+ 
 class Image(models.Model):
     url = models.ImageField(upload_to='images/')
     alt_text = models.CharField(max_length=MAX_LENGTH_TEXT , null=True, blank=True)
@@ -54,7 +51,7 @@ class Image(models.Model):
 
     def __str__(self):
         return f"{self.object_type} - {self.object_id}"
-#ok
+
 class Vendor(models.Model):
     vid = models.CharField(max_length=MAX_LENGTH_VID, primary_key=True)
     title = models.CharField(max_length=MAX_LENGTH_TITLE)
@@ -91,7 +88,6 @@ class Vendor(models.Model):
         verbose_name = "Vendor"
         verbose_name_plural = "Vendors"
 
-#ok
 class Coupon(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     code = models.CharField(max_length=MAX_LENGTH_CODE , unique=True)
@@ -110,7 +106,6 @@ class Coupon(models.Model):
         verbose_name = "Coupon"
         verbose_name_plural = "Coupons"
 
-#ok
 class CouponUser(models.Model):
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -122,8 +117,7 @@ class CouponUser(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['coupon', 'user'], name='unique_coupon_user')
         ]
-
-#ok       
+    
 class Category(models.Model):
     cid = models.CharField(max_length=MAX_LENGTH_CID, primary_key=True)
     title = models.CharField(max_length=MAX_LENGTH_TITLE)
@@ -146,7 +140,6 @@ class Category(models.Model):
         db_table = 'category'
         verbose_name = "Category"
         verbose_name_plural = "Categories"
-#ok
 
 class Product(models.Model):
     pid = ShortUUIDField(unique=True, length=10, max_length=MAX_LENGTH_PID , alphabet="abcdefgh12345", primary_key=True)
@@ -188,7 +181,7 @@ class Product(models.Model):
 
     def __repr__(self):
         return f"<Product {self.title}>"
-#ok
+
 class ProductReview(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name="reviews")
@@ -205,8 +198,6 @@ class ProductReview(models.Model):
     def __str__(self):
         return f"{self.user} - {self.product} ({self.rating}★)"
 
-
-#ok
 class ReturnRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='return_requests')
     order_product = models.ForeignKey('CartOrderProducts', on_delete=models.CASCADE, related_name='return_requests')
@@ -223,7 +214,7 @@ class ReturnRequest(models.Model):
         verbose_name = "Return Request"
         verbose_name_plural = "Return Requests"
         ordering = ['-created_at']
-#ok
+
 class CartOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_orders")
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="cart_orders")
@@ -246,7 +237,6 @@ class CartOrder(models.Model):
         verbose_name_plural = "Cart Orders"
         ordering = ['-order_date']
 
-#ok
 class CartOrderProducts(models.Model):
     order = models.ForeignKey(CartOrder, on_delete=models.CASCADE, related_name='order_products')
     item = models.CharField(max_length=MAX_LENGTH_ITEM)
@@ -263,3 +253,4 @@ class CartOrderProducts(models.Model):
         verbose_name = "Cart Order Product"
         verbose_name_plural = "Cart Order Products"
         ordering = ['-id']
+        
