@@ -14,6 +14,8 @@ urlpatterns = [
     path("payment-completed/", payment_completed_view, name="payment-completed"),
     path("payment-failed/", payment_failed_view, name="payment-failed"),
     path("dashboard/order/<id>/", order_detail, name="order-detail"),
-    path("category/", category_list_view),
+    path("category/", category_list_view, name="category-list"),
     path("category/<cid>/", category_product_list__view, name="category-product-list"),
+    path("vendors/", vendor_list_view, name="vendor-list"),
+    path("vendor/<vid>/", vendor_detail_view, name="vendor-detail"),
 ]
