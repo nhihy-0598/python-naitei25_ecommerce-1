@@ -1,14 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from django.shortcuts import redirect
 from django.http import JsonResponse
-from .models import Product
 from django.template.loader import render_to_string
 from django.db.models import Avg
-from core.models import ProductReview
-from django.shortcuts import get_object_or_404
-from core.models import Image
+from .fake_data import *
+from core.models import *
 
 # Create your views here.
 def index (request):
@@ -176,3 +173,31 @@ def category_product_list__view(request, cid):
         "products": products,
     }
     return render(request, "core/category-product-list.html", context)
+
+def vendor_list_view(request):
+    vendors = Vendor.objects.all()
+    
+    # Debug: Print vendor info
+    for vendor in vendors:
+        print(f"Vendor: {vendor.title}")
+        print(f"  - primary_image_url: {vendor.primary_image_url}")
+        print(f"  - image_set count: {vendor.image_set.count()}")
+        for img in vendor.image_set.all():
+            print(f"    - Image: {img.url.url}, is_primary: {img.is_primary}, object_type: {img.object_type}")
+    
+    context = {
+        "vendors": vendors,
+    }
+    return render(request, "core/vendor-list.html", context)
+
+def vendor_detail_view(request, vid):
+    vendor = Vendor.objects.get(vid=vid)
+    products = Product.objects.filter(vendor=vendor, product_status="published").order_by("-date")
+    categories = Category.objects.all()
+
+    context = {
+        "vendor": vendor,
+        "products": products,
+        "categories": categories,
+    }
+    return render(request, "core/vendor-detail.html", context)

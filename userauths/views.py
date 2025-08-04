@@ -7,7 +7,7 @@ from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
 def register_view(request):
-    
+
     if request.method == "POST":
         form = UserRegisterForm(request.POST or None)
         if form.is_valid():
@@ -30,27 +30,25 @@ def login_view(request):
     if request.user.is_authenticated:
         messages.warning(request,f"You are already logged in.")
         return redirect("core:index")
-    
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        
+
         try:
             user = User.object.get(email=email)
         except:
             messages.warning(request, f"User with {email} does not exists")
-            
+
         user = authenticate(request, email=email, password=password)
-        
+
         if user is not None:
             login(request, user)
             messages.success(request, f"Login successfully!")
             return redirect("core:index")
         else:
             messages.warning(request, "User does not exist. Create an account.")
-    
+
     context = {}
-            
+
     return render(request, "userauths/sign-in.html", context)
-        
-        
