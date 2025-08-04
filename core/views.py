@@ -27,7 +27,6 @@ def cart_view(request):
     else:
         messages.warning(request, "Your cart is empty")
         return redirect("core:index")
-
 def add_to_cart(request):
     product_id = request.GET.get('id')
     qty = int(request.GET.get('qty', 1))
@@ -181,3 +180,111 @@ def search_view(request):
 
 def product_detail_view(request, pid):
     return render(request, "core/product-detail.html")
+
+def vendor_list_view(request):
+    # Get search parameter
+    search_query = request.GET.get('search', '')
+    
+    # Get sort parameter from request with validation
+    sort_by = request.GET.get('sort', 'title')
+    order = request.GET.get('order', 'asc')
+    
+    # Validate sort_by parameter
+    valid_sort_fields = ['title', 'date', 'authentic_rating', 'shipping_on_time', 'chat_resp_time']
+    if sort_by not in valid_sort_fields:
+        sort_by = 'title'
+    
+    # Validate order parameter
+    if order not in ['asc', 'desc']:
+        order = 'asc'
+    
+    # Get page parameter
+    page_number = request.GET.get('page', 1)
+    
+    vendors = Vendor.objects.all()
+    
+    # Apply search filter
+    if search_query:
+        vendors = vendors.filter(
+            Q(title__icontains=search_query) |
+            Q(vid__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(address__icontains=search_query)
+        )
+    
+    # Apply sorting with improved logic
+    sort_mapping = {
+        'title': 'title',
+        'date': 'date',
+        'authentic_rating': 'authentic_rating',
+        'shipping_on_time': 'shipping_on_time',
+        'chat_resp_time': 'chat_resp_time'
+    }
+    
+    sort_field = sort_mapping.get(sort_by, 'title')
+    if order == 'desc':
+        sort_field = f'-{sort_field}'
+    
+    vendors = vendors.order_by(sort_field)
+    
+    # Apply pagination
+    paginator = Paginator(vendors, 12)  # Show 12 vendors per page
+    page_obj = paginator.get_page(page_number)
+    
+
+    
+    context = {
+        "vendors": page_obj,
+        "sort_by": sort_by,
+        "order": order,
+        "search_query": search_query,
+        "page_obj": page_obj,
+        "get_sorting_url": get_sorting_url,
+        "base_params": {"search": search_query} if search_query else {},
+    }
+    return render(request, "core/vendor-list.html", context)
+
+def vendor_detail_view(request, vid):
+    vendor = Vendor.objects.get(vid=vid)
+    
+    # Get sort parameters for products with validation
+    sort_by = request.GET.get('sort', 'date')
+    order = request.GET.get('order', 'desc')
+    
+    # Validate sort_by parameter
+    valid_sort_fields = ['date', 'title', 'price', 'rating']
+    if sort_by not in valid_sort_fields:
+        sort_by = 'date'
+    
+    # Validate order parameter
+    if order not in ['asc', 'desc']:
+        order = 'desc'
+    
+    products = Product.objects.filter(vendor=vendor, product_status="published")
+    
+    # Apply sorting to products with improved logic
+    sort_mapping = {
+        'date': 'date',
+        'title': 'title',
+        'price': 'amount',
+        'rating': 'rating_avg'
+    }
+    
+    sort_field = sort_mapping.get(sort_by, 'date')
+    if order == 'desc':
+        sort_field = f'-{sort_field}'
+    
+    products = products.order_by(sort_field)
+    
+    categories = Category.objects.all()
+
+    context = {
+        "vendor": vendor,
+        "products": products,
+        "categories": categories,
+        "sort_by": sort_by,
+        "order": order,
+        "get_sorting_url": get_sorting_url,
+        "base_params": {},
+    }
+    return render(request, "core/vendor-detail.html", context)

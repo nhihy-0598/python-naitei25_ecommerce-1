@@ -105,7 +105,7 @@
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
-                            <form action="#" method="GET">
+                            <form action="{% url 'core:search' %}" method="GET">
                                 <select class="select-active">
                                     <option>{% trans "All Categories" %}</option>
                                     <option>{% trans "Milks and Dairies" %}</option>
@@ -142,6 +142,7 @@
                                         <div class="shopping-cart-footer">
                                             <div class="shopping-cart-button">
                                                 <span class="outline">{% trans "View cart" %}</span>
+                                                <a href="{% url 'core:checkout' %}" class="outline">{% trans "View cart" %}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -153,8 +154,8 @@
                                     <span><span class="lable ml-0">{% trans "Account" %}</span></span>
                                     <div class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                                         <ul>
-                                            <li><span><i class="fi fi-rs-user mr-10"></i>{% trans "My Account" %}</span></li>
-                                            <li><span><i class="fi fi-rs-user mr-10"></i>{% trans "Admin Dashboard" %}</span></li>
+                                            <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>{% trans "My Account" %}</a></li>
+                                            <li><a href="{% url 'core:dashboard' %}"><i class="fi fi-rs-user mr-10"></i>{% trans "Admin Dashboard" %}</a></li>
                                             <li><span><i class="fi fi-rs-heart mr-10"></i>{% trans "My Wishlist" %}</span></li>
                                             <li><span><i class="fi fi-rs-settings-sliders mr-10"></i>{% trans "Setting" %}</span></li>
 
@@ -209,22 +210,16 @@
                                 <ul>
                                     <li class="hot-deals"><img src="{% static 'assets/imgs/theme/icons/icon-hot.svg' %}" alt="hot deals" /><span>{% trans "Deals" %}</span></li>
                                     <li>
-                                        <span class="active">{% trans "Home" %}</span>
+                                        <a href="{% url 'core:index' %}" class="active">{% trans "Home" %}</a>
                                     </li>
                                     <li>
-                                        <a href="#">{% trans "Category" %} <i class="fi-rs-angle-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><span>{% trans "Electronics" %}</span></li>
-                                            <li><span>{% trans "Fashion" %}</span></li>
-                                            <li><span>{% trans "Home & Garden" %}</span></li>
-                                            <li><span>{% trans "Sports" %}</span></li>
-                                        </ul>
+                                        <a href="{% url 'core:category-list' %}">{% trans "Category" %}</a>
                                     </li>
                                     <li>
-                                        <span>{% trans "Shop" %}</span>
+                                        <a href="{% url 'core:product-list' %}">{% trans "Shop" %}</a>
                                     </li>
                                     <li>
-                                        <span>{% trans "Vendors" %}</span>
+                                        <a href="{% url 'core:vendor-list' %}">{% trans "Vendors" %}</a>
                                     </li>
                                     <li class="position-static">
                                         <a href="#">{% trans "Mega menu" %} <i class="fi-rs-angle-down"></i></a>
@@ -271,9 +266,9 @@
                                     <li>
                                         <a href="#">{% trans "Pages" %} <i class="fi-rs-angle-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><span>{% trans "About Us" %}</span></li>
+                                            <li><a href="{% url 'core:about_us' %}">{% trans "About Us" %}</a></li>
                                             <li><span>{% trans "Contact" %}</span></li>
-                                            <li><span>{% trans "My Dashboard" %}</span></li>
+                                            <li><a href="{% url 'core:dashboard' %}">{% trans "My Dashboard" %}</a></li>
                                             <li><span>{% trans "Purchase Guide" %}</span></li>
                                             <li><span>{% trans "Privacy Policy" %}</span></li>
                                             <li><span>{% trans "Terms of Service" %}</span></li>
