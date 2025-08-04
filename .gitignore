@@ -210,3 +210,7 @@ static/
 staticfiles/
 
 createdb.sql
+nhap.html
+createdb.sql
+core/fake_data.py
+sample_data.sql
