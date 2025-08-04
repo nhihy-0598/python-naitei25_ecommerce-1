@@ -9,6 +9,10 @@ from django.db.models import Avg
 from core.models import ProductReview
 from django.shortcuts import get_object_or_404
 from core.models import Image
+from core.models import Vendor
+from django.core.paginator import Paginator
+from django.db.models import Q
+from core.models import Category
 
 # Create your views here.
 def index (request):
@@ -288,3 +292,9 @@ def vendor_detail_view(request, vid):
         "base_params": {},
     }
     return render(request, "core/vendor-detail.html", context)
+
+def get_sorting_url(request, sort_by, order):
+    params = request.GET.copy()
+    params['sort'] = sort_by
+    params['order'] = order
+    return f"{request.path}?{params.urlencode()}"

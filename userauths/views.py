@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from userauths.models import User
 
 
-def register_view(request):  
+def register_view(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST or None)
         if form.is_valid():
@@ -46,14 +46,22 @@ def login_view(request):
             else:
                 messages.warning(request, _("User does not exist. Create an account."))
         except:
-            messages.warning(
-                request,
-                _(f"User with {email} does not exist.")
-            )
-    return render(request, "userauths/sign-in.html")
+            messages.warning(request, f"User with {email} does not exists")
 
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, f"Login successfully!")
+            return redirect("core:index")
+        else:
+            messages.warning(request, "User does not exist. Create an account.")
+
+    context = {}
+
+    return render(request, "userauths/sign-in.html", context)
 
 def logout_view(request):
     logout(request)
-    messages.success(request, _("You logged out."))
+    messages.success(request, "You logged out.")
     return redirect("userauths:sign-in")
