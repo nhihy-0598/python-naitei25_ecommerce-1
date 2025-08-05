@@ -157,7 +157,12 @@
                                             <li><span><i class="fi fi-rs-user mr-10"></i>{% trans "Admin Dashboard" %}</span></li>
                                             <li><span><i class="fi fi-rs-heart mr-10"></i>{% trans "My Wishlist" %}</span></li>
                                             <li><span><i class="fi fi-rs-settings-sliders mr-10"></i>{% trans "Setting" %}</span></li>
-                                            <li><span><i class="fi fi-rs-sign-in mr-10"></i>{% trans "Sign In" %}</span></li>
+
+                                            {% if request.user.is_authenticated %}
+                                            <li><a href="{% url 'userauths:sign-out' %}"><i class="fi fi-rs-sign-out mr-10"></i>Sign out</a></li>
+                                            {% else %}
+                                            <li><a href="{% url 'userauths:sign-in' %}"><i class="fi fi-rs-sign-in mr-10"></i>Sign In</a></li>
+                                            {% endif %}
                                         </ul>
                                     </div>
                                 </div>
@@ -316,6 +321,14 @@
                         </div>
                     </div>
                 </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{message.tags}}">
+                            <strong>{{ message }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <script src="{% static 'assets/js/auto_close_alert.js' %}"></script>
             </div>
         </div>
     </header>
