@@ -238,7 +238,7 @@ def category_list_view(request):
             "cid": cat.cid,
             "title": cat.title,
             "alt_text": image.alt_text if image else "",
-            "image_url": image.url.url if image else DEFAULT_CATEGORY_IMAGE
+            "image_url": image.image.url if image else DEFAULT_CATEGORY_IMAGE
         })
 
     return render(request, "core/category-list.html", {
@@ -258,7 +258,7 @@ def category_product_list_view(request, cid):
             object_id=product.pid,
             is_primary=True
         ).first()
-        product.image_url = primary_image.url.url if primary_image else DEFAULT_PRODUCT_IMAGE
+        product.image_url = primary_image.image.url if primary_image else DEFAULT_PRODUCT_IMAGE
         product.alt_text = primary_image.alt_text if primary_image else product.title
 
     context = {
@@ -400,3 +400,23 @@ def get_sorting_url(request, sort_by, order):
     params['order'] = order
     return f"{request.path}?{params.urlencode()}"
     
+def search_view(request):
+    query = request.GET.get("q", "").strip()  # lấy query và xóa khoảng trắng đầu/cuối
+
+    products = Product.objects.filter(product_status=PRODUCT_STATUS_PUBLISHED).order_by("-date")
+
+    if query:
+        products = products.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        ).order_by("-date")
+    page_number = request.GET.get("page", DEFAULT_PAGE)
+    paginator = Paginator(products, PRODUCTS_PER_PAGE)  
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "products": page_obj,
+        "query": query,
+        "result_count": products.count(),
+        "page_obj": page_obj, 
+    }
+    return render(request, "core/search.html", context)

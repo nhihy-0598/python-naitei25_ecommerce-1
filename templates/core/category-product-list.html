@@ -2,7 +2,7 @@
 {% load static %}
 {% load currency %}
 {% load i18n %}
-
+{% load image_tags %}
 {% block content %}
 <main class="main">
     <div class="page-header mt-30 mb-50">
@@ -37,8 +37,8 @@
                             <div class="product-img-action-wrap">
                                 <div class="product-img product-img-zoom">
                                     <a href="{% url 'core:product-detail' p.pid %}">
-                                        <img class="default-img product-thumbnail" src="{{ p.image_url }}" alt="{{ p.alt_text }}">
-                                        <img class="hover-img product-thumbnail" src="{{ p.image_url }}" alt="{{ p.alt_text }}">                                    </a>
+                                        <img class="default-img product-thumbnail" src="{{ p.primary_image_url}}" alt="{{ p.alt_text }}">
+                                        <img class="hover-img product-thumbnail" src="{{ p.primary_image_url }}" alt="{{ p.alt_text }}">                                    </a>
                                 </div>
                                 <div class="product-action-1">
                                     <a aria-label="{% trans 'Add To Wishlist' %}" class="action-btn add-to-wishlist" data-product-item="{{ p.id }}"><i class="fi-rs-heart"></i></a>
@@ -51,7 +51,7 @@
 
                             <div class="product-content-wrap">
                                 <div class="product-category">
-                                    <a href="{% url 'core:category-products' p.category.cid %}">{{ p.category.title }}</a>
+                                    <a href="{% url 'core:category-product-list' p.category.cid %}">{{ p.category.title }}</a>
                                 </div>
                                 <h2><a href="{% url 'core:product-detail' p.pid %}">{{ p.title }}</a></h2>
                                 <div class="product-rate-cover">

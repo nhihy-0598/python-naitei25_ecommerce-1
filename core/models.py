@@ -9,6 +9,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from cloudinary.models import CloudinaryField
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from core.constants import *
 
 from django.contrib.auth.models import AbstractUser
 from userauths.models import User
@@ -266,8 +267,7 @@ class Product(models.Model):
         image = self.get_primary_image()
         if image:
             return image.image.url.replace("http://", "https://")
-        return '/static/assets/imgs/default.jpg'
-    
+        return DEFAULT_CATEGORY_IMAGE
     @property
     def additional_images(self):
         return Image.objects.filter(
