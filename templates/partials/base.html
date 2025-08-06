@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/plugins/slider-range.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -213,7 +214,14 @@
                                         <a href="{% url 'core:index' %}" class="active">{% trans "Home" %}</a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'core:category-list' %}">{% trans "Category" %}</a>
+                                        <a href="{% url 'core:category-list' %}">{% trans "Category" %} <i class="fi-rs-angle-down"></i></a>
+                                        <ul class="sub-menu">
+                                            {% for c in categories %}
+                                            <li><a href="{% url 'core:category-product-list' c.cid %}">{{c.title}}</a></li>
+                                            {% endfor %}
+                                            <hr>
+                                            <li><a href="{% url 'core:category-list' %}">{% trans "All Categories" %}</a></li>
+                                        </ul>
                                     </li>
                                     <li>
                                         <a href="{% url 'core:product-list' %}">{% trans "Shop" %}</a>
