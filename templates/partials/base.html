@@ -26,7 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
+    <script src="{% static 'js/alerts.js' %}"></script>
     {% block head %}{% endblock head %}
     {% block extra_css %}{% endblock extra_css %}
 </head>
@@ -323,7 +323,6 @@
                         </div>
                     {% endfor %}
                 {% endif %}
-                <script src="{% static 'assets/js/auto_close_alert.js' %}"></script>
             </div>
         </div>
     </header>
@@ -650,6 +649,7 @@
     <!-- Template  JS -->
     <script src="{% static 'assets/js/main.js?v=5.3' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/alerts.js' %}"></script>
     {% block extra_js %}{% endblock extra_js %}
 </body>
 </html>

@@ -6,12 +6,11 @@ from taggit.managers import TaggableManager
 from django_ckeditor_5.fields import CKEditor5Field
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import AbstractUser
 from userauths.models import User
 from . import constants as C
-from cloudinary.models import CloudinaryField
-
+from django.core.exceptions import ObjectDoesNotExist
 # Create your models here.
 def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.user.id, filename)
@@ -29,9 +28,9 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.address}"
- 
+
 class Image(models.Model):
-    url = CloudinaryField('image')
+    image =  CloudinaryField('image')
     alt_text = models.CharField(max_length=C.MAX_LENGTH_TEXT , null=True, blank=True)
     object_type = models.CharField(max_length=C.MAX_LENGTH_OBJECT_TYPE, choices=C.OBJECT_TYPE_CHOICES )  # e.g., 'Product', 'Category', 'Vendor'
     object_id = models.CharField(max_length=C.MAX_LENGTH_OBJECT_ID)    # e.g., pid, cid, vid
@@ -59,12 +58,12 @@ class Vendor(models.Model):
         help_text="Tỷ lệ giao hàng đúng hẹn (%)",
         validators=[MinValueValidator(C.MIN), MaxValueValidator(C.SHIP_ON_TIME )]
     )
-    
+
     authentic_rating = models.FloatField(
         help_text="Điểm đánh giá độ tin cậy, 0.0-5.0",
         validators=[MinValueValidator(C.MIN), MaxValueValidator(C.AUTHENTIC_RATING)]
     )
-    
+
     days_return = models.PositiveIntegerField(
         help_text="Số ngày cho phép hoàn trả",
         validators=[MinValueValidator(C.MIN), MaxValueValidator(C.DAY_RETURN)]  # giới hạn trong 2 tháng
@@ -79,17 +78,17 @@ class Vendor(models.Model):
 
     def __str__(self):
         return f"{self.title} (ID: {self.vid})"
-    
+
     @property
     def image_set(self):
         """Get all images for this vendor"""
         return Image.objects.filter(object_type='vendor', object_id=self.vid)
-    
+
     @property
     def banner_set(self):
         """Get all banner images for this vendor"""
         return Image.objects.filter(object_type='vendor_banner', object_id=self.vid)
-    
+
     @property
     def primary_banner_url(self):
         """Get primary banner image URL"""
@@ -101,12 +100,12 @@ class Vendor(models.Model):
                 print(f"Error getting banner URL for vendor {self.vid}: {e}")
                 return None
         return None
-    
+
     class Meta:
-        db_table = 'core_vendor'
+        db_table = 'vendor'
         verbose_name = "Vendor"
         verbose_name_plural = "Vendors"
-    
+
     @property
     def primary_image_url(self):
         img = Image.objects.filter(object_type='vendor', object_id=self.vid, is_primary=True).first()
@@ -130,7 +129,7 @@ class Coupon(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.vendor.title}"
-   
+
     class Meta:
         db_table = 'coupon'
         verbose_name = "Coupon"
@@ -139,7 +138,7 @@ class Coupon(models.Model):
 class CouponUser(models.Model):
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    
+
     def __str__(self):
         return f"{self.user} - {self.coupon.code}"
     class Meta:
@@ -147,7 +146,7 @@ class CouponUser(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['coupon', 'user'], name='unique_coupon_user')
         ]
-    
+
 class Category(models.Model):
     cid = models.CharField(max_length=C.MAX_LENGTH_CID, primary_key=True)
     title = models.CharField(max_length=C.MAX_LENGTH_TITLE)
@@ -165,7 +164,7 @@ class Category(models.Model):
         if self.parent:
             return f"{self.parent.title} ➝ {self.title}"
         return self.title
-    
+
     @property
     def image_set(self):
         """Get all images for this category"""
@@ -210,23 +209,53 @@ class Product(models.Model):
 
     def __repr__(self):
         return f"{self.title} (ID: {self.pid})"
-    
+
     @property
     def image_set(self):
         """Get all images for this product"""
         return Image.objects.filter(object_type='product', object_id=self.pid)
-    
+
     def get_precentage(self):
         """Calculate discount percentage"""
         if self.old_price and self.old_price > 0:
             return ((self.old_price - self.amount) / self.old_price) * 100
         return 0
-    
+
     class Meta:
         db_table = 'product'
         verbose_name = "Product"
         verbose_name_plural = "Products"
         ordering = ['-date']
+
+    def __repr__(self):
+        return f"<Product {self.title}>"
+    def get_precentage(self):
+        """
+        Trả về phần trăm giảm giá: (old_price - amount) / old_price * 100
+        Làm tròn đến 0 chữ số thập phân.
+        """
+        try:
+            if self.old_price > 0:
+                return round((self.old_price - self.amount) / self.old_price * 100, 0)
+            return 0
+        except:
+            return 0
+    def get_primary_image(self):
+        """Trả về đối tượng Image chính (primary)."""
+        return Image.objects.filter(
+            object_type='Product',
+            object_id=self.pid,
+            is_primary=True
+        ).first()
+    @property
+    def primary_image_url(self):
+        """Trả về URL của ảnh chính (nếu có)."""
+        image = self.get_primary_image()
+        if image:
+            return image.image.url.replace("http://", "https://")
+        return '/static/assets/imgs/default.jpg'
+
+
 
 class ProductReview(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -243,6 +272,20 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.product} ({self.rating}★)"
+    def get_primary_image(self):
+        """Trả về đối tượng Image chính (primary)."""
+        return Image.objects.filter(
+            object_type='Product',
+            object_id=self.pid,
+            is_primary=True
+        ).first()
+    @property
+    def primary_image_url(self):
+        """Trả về URL của ảnh chính (nếu có)."""
+        image = self.get_primary_image()
+        if image:
+            return image.image.url.replace("http://", "https://")
+        return '/static/assets/imgs/default.jpg'
 
 class ReturnRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='return_requests')

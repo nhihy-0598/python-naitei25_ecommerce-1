@@ -14,9 +14,61 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from core.models import Category
 
+from core.constants import TAG_LIMIT
+from core.models import Coupon, Product, Category, Vendor, CartOrder, CartOrderProducts, Image, ProductReview, Address
 # Create your views here.
-def index (request):
-    return render(request, 'core/index.html')
+from taggit.models import Tag
+
+
+from django.shortcuts import render
+from .models import Product, Image
+
+def index(request):
+    # Base query: các sản phẩm đã publish
+    base_query = Product.objects.filter(product_status="published").order_by("-pid")
+
+    # Featured products
+    products = base_query.filter(featured=True)
+
+    # Các category cần lọc
+    categories = {
+        "products_milk": "Milks & Dairies",
+        "products_tea": "Coffees & Teas",
+        "products_pet": "Pet Foods",
+        "products_meat": "Meats",
+        "products_veg": "Vegetables",
+        "products_fruit": "Fruits",
+    }
+
+    # Lọc theo từng category một cách tự động
+    category_products = {
+        key: base_query.filter(category__title=value)
+        for key, value in categories.items()
+    }
+
+    # Lấy ảnh đại diện của từng product (chỉ cho featured)
+    product_images = {
+        p.pid: (Image.objects.filter(
+            object_type='Product',
+            object_id=p.pid,
+            is_primary=True
+        ).first().image.url if Image.objects.filter(
+            object_type='Product',
+            object_id=p.pid,
+            is_primary=True
+        ).exists() else None)
+        for p in products
+    }
+
+    # Gộp context lại
+    context = {
+        'products': products,
+        'product_images': product_images,
+        **category_products  # unpack luôn dict vào context
+    }
+
+    return render(request, 'core/index.html', context)
+
 
 def cart_view(request):
     cart_total_amount = 0
@@ -135,7 +187,15 @@ def ajax_add_review(request, pid):
        }
     )
 def product_list_view(request):
-    return render(request, 'core/product-list.html')
+    products = Product.objects.filter(product_status="published").order_by("-pid")
+    tags = Tag.objects.all().order_by("-id")[:TAG_LIMIT]
+
+    context = {
+        "products":products,
+        "tags":tags,
+    }
+
+    return render(request, 'core/product-list.html', context)
 
 def about_us(request):
     return render(request, "core/about_us.html")
@@ -177,6 +237,7 @@ def category_product_list__view(request, cid):
     context = {
         "category": get_category_by_id(cid),
         "products": products,
+
     }
     return render(request, "core/category-product-list.html", context)
 def search_view(request):
@@ -188,25 +249,25 @@ def product_detail_view(request, pid):
 def vendor_list_view(request):
     # Get search parameter
     search_query = request.GET.get('search', '')
-    
+
     # Get sort parameter from request with validation
     sort_by = request.GET.get('sort', 'title')
     order = request.GET.get('order', 'asc')
-    
+
     # Validate sort_by parameter
     valid_sort_fields = ['title', 'date', 'authentic_rating', 'shipping_on_time', 'chat_resp_time']
     if sort_by not in valid_sort_fields:
         sort_by = 'title'
-    
+
     # Validate order parameter
     if order not in ['asc', 'desc']:
         order = 'asc'
-    
+
     # Get page parameter
     page_number = request.GET.get('page', 1)
-    
+
     vendors = Vendor.objects.all()
-    
+
     # Apply search filter
     if search_query:
         vendors = vendors.filter(
@@ -215,7 +276,7 @@ def vendor_list_view(request):
             Q(description__icontains=search_query) |
             Q(address__icontains=search_query)
         )
-    
+
     # Apply sorting with improved logic
     sort_mapping = {
         'title': 'title',
@@ -224,19 +285,19 @@ def vendor_list_view(request):
         'shipping_on_time': 'shipping_on_time',
         'chat_resp_time': 'chat_resp_time'
     }
-    
+
     sort_field = sort_mapping.get(sort_by, 'title')
     if order == 'desc':
         sort_field = f'-{sort_field}'
-    
+
     vendors = vendors.order_by(sort_field)
-    
+
     # Apply pagination
     paginator = Paginator(vendors, 12)  # Show 12 vendors per page
     page_obj = paginator.get_page(page_number)
-    
 
-    
+
+
     context = {
         "vendors": page_obj,
         "sort_by": sort_by,
@@ -250,22 +311,22 @@ def vendor_list_view(request):
 
 def vendor_detail_view(request, vid):
     vendor = Vendor.objects.get(vid=vid)
-    
+
     # Get sort parameters for products with validation
     sort_by = request.GET.get('sort', 'date')
     order = request.GET.get('order', 'desc')
-    
+
     # Validate sort_by parameter
     valid_sort_fields = ['date', 'title', 'price', 'rating']
     if sort_by not in valid_sort_fields:
         sort_by = 'date'
-    
+
     # Validate order parameter
     if order not in ['asc', 'desc']:
         order = 'desc'
-    
+
     products = Product.objects.filter(vendor=vendor, product_status="published")
-    
+
     # Apply sorting to products with improved logic
     sort_mapping = {
         'date': 'date',
@@ -273,13 +334,13 @@ def vendor_detail_view(request, vid):
         'price': 'amount',
         'rating': 'rating_avg'
     }
-    
+
     sort_field = sort_mapping.get(sort_by, 'date')
     if order == 'desc':
         sort_field = f'-{sort_field}'
-    
+
     products = products.order_by(sort_field)
-    
+
     categories = Category.objects.all()
 
     context = {
