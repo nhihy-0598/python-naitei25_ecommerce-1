@@ -12,7 +12,7 @@ urlpatterns = [
 
     path("about_us/", about_us, name="about_us"),
     path("dashboard/", customer_dashboard, name="dashboard"),
-    path("checkout/", checkout, name="checkout"),
+    path("checkout/<oid>/", checkout, name="checkout"),
     path("payment-completed/", payment_completed_view, name="payment-completed"),
     path("payment-failed/", payment_failed_view, name="payment-failed"),
     path("dashboard/order/<id>/", order_detail, name="order-detail"),
@@ -31,4 +31,5 @@ urlpatterns = [
     path("vendors/", vendor_list_view, name="vendor-list"),
     path("vendor/<vid>/", vendor_detail_view, name="vendor-detail"),
     path("search/", search_view, name="search"),
+    path("paypal/", include("paypal.standard.ipn.urls")),
 ]
