@@ -8,7 +8,9 @@ from django.template.loader import render_to_string
 from django.db.models import Avg
 from core.models import ProductReview
 from django.shortcuts import get_object_or_404
+from core.models import *
 from core.models import Image
+from core.fake_data import *
 from core.models import Vendor
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -18,6 +20,7 @@ from core.constants import TAG_LIMIT
 from core.models import Coupon, Product, Category, Vendor, CartOrder, CartOrderProducts, Image, ProductReview, Address
 # Create your views here.
 from taggit.models import Tag
+from core.constants import *
 
 
 from django.shortcuts import render
@@ -79,6 +82,7 @@ def cart_view(request):
     else:
         messages.warning(request, "Your cart is empty")
         return redirect("core:index")
+ 
 def add_to_cart(request):
     product_id = request.GET.get('id')
     qty = int(request.GET.get('qty', 1))
@@ -158,7 +162,7 @@ def update_cart(request):
 
 def ajax_add_review(request, pid):
     product = Product.objects.get(pk=pid)
-    user = request.user
+    user = request.user 
 
     review = ProductReview.objects.create(
         user=user,
@@ -220,18 +224,45 @@ def order_detail(request, id):
     return render(request, 'core/order-detail.html', context)
 
 def category_list_view(request):
-    context = {"categories": get_categories()}
-    return render(request, 'core/category-list.html', context)
+    categories = Category.objects.all()
+    category_data = []
 
-def category_product_list__view(request, cid):
-    products = get_products_by_category(cid)
+    for cat in categories:
+        image = Image.objects.filter(
+            object_type='Category',
+            object_id=cat.cid,
+            is_primary=True
+        ).first()
 
-    # Add reviews count to each product
+        category_data.append({
+            "cid": cat.cid,
+            "title": cat.title,
+            "alt_text": image.alt_text if image else "",
+            "image_url": image.url.url if image else DEFAULT_CATEGORY_IMAGE
+        })
+
+    return render(request, "core/category-list.html", {
+        "categories": category_data
+    })
+
+
+def category_product_list_view(request, cid):
+    category = get_object_or_404(Category, cid=cid)
+
+    products = Product.objects.filter(category=category, product_status=PRODUCT_STATUS_PUBLISHED)
+
+    # Gán thêm thuộc tính image_url và alt_text (không ghi đè thuộc tính @property image)
     for product in products:
-        product['reviews_count'] = product['reviews']['all']['count']
+        primary_image = Image.objects.filter(
+            object_type='Product',
+            object_id=product.pid,
+            is_primary=True
+        ).first()
+        product.image_url = primary_image.url.url if primary_image else DEFAULT_PRODUCT_IMAGE
+        product.alt_text = primary_image.alt_text if primary_image else product.title
 
     context = {
-        "category": get_category_by_id(cid),
+        "category": category,
         "products": products,
 
     }
