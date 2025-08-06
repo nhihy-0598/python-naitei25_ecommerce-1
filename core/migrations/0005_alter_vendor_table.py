@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0004_rename_url_image_image"),
+        ("core", "0002_initial"),
     ]
 
     operations = [
