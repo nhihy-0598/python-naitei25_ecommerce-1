@@ -7,7 +7,13 @@ STATUS_CHOICE = (
     ("delivered", "Delivered"),
 )
 
+
 # Product Status Choices
+STATUS_DRAFT = "draft"
+STATUS_DISABLED = "disabled"
+STATUS_REJECTED = "rejected"
+STATUS_IN_REVIEW = "in_review"
+STATUS_PUBLISHED = "published"
 STATUS = (
     ("draft", "Draft"),
     ("disabled", "Disabled"),

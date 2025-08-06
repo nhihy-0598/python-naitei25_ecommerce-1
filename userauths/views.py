@@ -65,3 +65,5 @@ def logout_view(request):
     logout(request)
     messages.success(request, "You logged out.")
     return redirect("userauths:sign-in")
+        
+        

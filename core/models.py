@@ -105,17 +105,24 @@ class Vendor(models.Model):
         db_table = 'vendor'
         verbose_name = "Vendor"
         verbose_name_plural = "Vendors"
+        
+    
+    @property
+    def primary_image(self):
+        return Image.objects.filter(object_type='Vendor', object_id=self.vid, is_primary=True).first()
 
+    # Lấy URL ảnh chính
     @property
     def primary_image_url(self):
-        img = Image.objects.filter(object_type='vendor', object_id=self.vid, is_primary=True).first()
+        img = self.primary_image
         if img:
             try:
-                return img.url.url  # CloudinaryField returns a CloudinaryResource object
+                return img.image.url  # CloudinaryField object
             except Exception as e:
                 print(f"Error getting image URL for vendor {self.vid}: {e}")
                 return None
-        return None
+        return '/static/assets/imgs/default.jpg'
+
 
 class Coupon(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
@@ -254,6 +261,15 @@ class Product(models.Model):
         if image:
             return image.image.url.replace("http://", "https://")
         return '/static/assets/imgs/default.jpg'
+    
+    @property
+    def additional_images(self):
+        return Image.objects.filter(
+            object_type='Product',
+            object_id=self.pid,
+            is_primary=False
+        )
+
 
 
 
