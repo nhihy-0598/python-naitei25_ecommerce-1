@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'taggit',
     'cloudinary',
     'cloudinary_storage',
+    'useradmin',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +156,8 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Login settings
+LOGIN_URL = '/user/sign-in/'
+LOGIN_REDIRECT_URL = '/useradmin/dashboard/'
+LOGOUT_REDIRECT_URL = '/user/sign-in/'

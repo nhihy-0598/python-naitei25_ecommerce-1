@@ -25,7 +25,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),
     path("user/", include("userauths.urls", namespace="userauths")),
-
+    path("useradmin/", include("useradmin.urls")),
 ]
 
 if settings.DEBUG:
