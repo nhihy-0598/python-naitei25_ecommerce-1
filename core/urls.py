@@ -8,8 +8,8 @@ urlpatterns = [
     path("", index, name="index"),
     path("products/", product_list_view, name="product-list"),
     path("products/<pid>/", product_detail_view, name="product-detail"),
-    
-    
+
+
     path("about_us/", about_us, name="about_us"),
     path("dashboard/", customer_dashboard, name="dashboard"),
     path("checkout/", checkout, name="checkout"),
@@ -18,8 +18,7 @@ urlpatterns = [
     path("dashboard/order/<id>/", order_detail, name="order-detail"),
     path("category/", category_list_view, name="category-list"),
     path("category/<cid>/", category_product_list_view, name="category-product-list"),
-    
-    
+
      # Homepage
     path("cart/", cart_view, name="cart"),
     path("add-to-cart/", add_to_cart, name="add-to-cart"),
