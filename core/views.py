@@ -5,7 +5,10 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from .models import Product
 from django.template.loader import render_to_string
-from django.db.models import Avg
+
+from django.db.models import Avg, Count
+from core.models import ProductReview
+
 from django.shortcuts import get_object_or_404
 from core.models import *
 from core.models import Image
@@ -22,6 +25,7 @@ from core.constants import *
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.shortcuts import render
+
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.db import transaction
@@ -29,6 +33,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
+
 
 def index(request):
     # Base query: các sản phẩm đã publish
@@ -207,7 +212,7 @@ def ajax_add_review(request, pid):
 
     return JsonResponse(
        {
-         'bool': True,
+        'bool': True,
         'context': context,
         'average_reviews': average_reviews
        }
@@ -408,14 +413,41 @@ def product_detail_view(request, pid):
     #product = Product.objects.get(pid = pid)
     # Lấy product theo pid, nếu không tìm thấy -> raise 404
     product = get_object_or_404(Product, pid=pid)
-
+    products = Product.objects.filter(category=product.category).exclude(pid=pid)[:4]
     address = None
     if request.user.is_authenticated:
         address = Address.objects.filter(user=request.user).first()
+        
+    reviews = ProductReview.objects.filter(product=product).order_by("-date")
+    reviews_with_width = []
+    for r in reviews:
+        width = r.rating * 20
+        reviews_with_width.append((r, width))
 
+    # average review
+    average_rating = ProductReview.objects.filter(product=product).aggregate(rating=Avg('rating'))
+    rating_counts = get_rating_counts(product)
+    
+    #product review form
+    review_form = ProductReviewForm()
+    
+    make_review = True
+    
+    if request.user.is_authenticated:
+        user_review_count = ProductReview.objects.filter(user=request.user, product=product).count()
+    
+        if user_review_count > 0:
+            make_review = False
     context = {
         "p": product,
-        "address": address
+        "address": address,
+        "products": products,
+        "reviews": reviews,
+        "average_rating": average_rating,
+        "reviews_with_width": reviews_with_width,
+        "rating_counts": rating_counts,
+        "review_form": review_form,
+        "make_review": make_review
     }
 
     return render(request, "core/product-detail.html", context)
@@ -554,3 +586,17 @@ def search_view(request):
         "page_obj": page_obj,
     }
     return render(request, "core/search.html", context)
+
+def get_rating_counts(product):
+    # Đếm số lượng review theo từng mức rating
+    queryset = ProductReview.objects.filter(product=product).values('rating').annotate(count=Count('id'))
+    rating_dict = {item['rating']: item['count'] for item in queryset}
+    results = []
+    for value, stars in RATING:
+        results.append({
+            'rating': value,
+            'stars': stars,
+            'count': rating_dict.get(value, 0)
+        })
+    return results
+

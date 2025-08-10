@@ -31,5 +31,11 @@ urlpatterns = [
     path("vendors/", vendor_list_view, name="vendor-list"),
     path("vendor/<vid>/", vendor_detail_view, name="vendor-detail"),
     path("search/", search_view, name="search"),
+
     path("paypal/", include("paypal.standard.ipn.urls")),
+
+    
+    #add review
+    path("ajax-add-review/<pid>", ajax_add_review, name="ajax-add-review")
+
 ]
