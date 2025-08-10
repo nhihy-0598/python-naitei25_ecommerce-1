@@ -10,7 +10,6 @@ from cloudinary.models import CloudinaryField
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from core.constants import *
-
 from django.contrib.auth.models import AbstractUser
 from userauths.models import User
 from . import constants as C
@@ -109,8 +108,8 @@ class Vendor(models.Model):
         db_table = 'vendor'
         verbose_name = "Vendor"
         verbose_name_plural = "Vendors"
-        
-    
+
+
     @property
     def primary_image(self):
         return Image.objects.filter(object_type='Vendor', object_id=self.vid, is_primary=True).first()
