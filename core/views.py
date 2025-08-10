@@ -7,7 +7,7 @@ from .models import Product
 from django.template.loader import render_to_string
 from django.db.models import Avg, Count
 from core.models import ProductReview
-
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from core.models import *
 from core.models import Image
@@ -24,7 +24,8 @@ from core.constants import *
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.shortcuts import render
-
+from .models import Product, Image
+from core.forms import ProductReviewForm
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.db import transaction
@@ -32,7 +33,6 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.forms import PayPalPaymentsForm
-
 
 def index(request):
     # Base query: các sản phẩm đã publish
@@ -408,7 +408,6 @@ def category_product_list_view(request, cid):
     }
     return render(request, "core/category-product-list.html", context)
 
-
 def product_detail_view(request, pid):
     #product = Product.objects.get(pid = pid)
     # Lấy product theo pid, nếu không tìm thấy -> raise 404
@@ -417,7 +416,7 @@ def product_detail_view(request, pid):
     address = None
     if request.user.is_authenticated:
         address = Address.objects.filter(user=request.user).first()
-        
+
     reviews = ProductReview.objects.filter(product=product).order_by("-date")
     reviews_with_width = []
     for r in reviews:
@@ -427,15 +426,15 @@ def product_detail_view(request, pid):
     # average review
     average_rating = ProductReview.objects.filter(product=product).aggregate(rating=Avg('rating'))
     rating_counts = get_rating_counts(product)
-    
+
     #product review form
     review_form = ProductReviewForm()
-    
+
     make_review = True
-    
+
     if request.user.is_authenticated:
         user_review_count = ProductReview.objects.filter(user=request.user, product=product).count()
-    
+
         if user_review_count > 0:
             make_review = False
     context = {
