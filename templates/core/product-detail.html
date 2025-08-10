@@ -39,9 +39,9 @@
                                                 <figure class="border-radius-10">
                                                     <img src="{{ p.primary_image_url }}" alt="product image" />
                                                 </figure>
-                                                {% for img in p_image %}
+                                                {% for img in p.additional_images %}
                                                 <figure class="border-radius-10">
-                                                    <img src="{{ img.images.url }}" alt="product image" />
+                                                    <img src="{{ img.image.url }}" alt="product image" />
                                                 </figure>
                                                 {% endfor %}
                                             </div>
@@ -125,7 +125,7 @@
                                                 <a class="nav-link" id="Vendor-info-tab" data-bs-toggle="tab" href="#Vendor-info">Vendor</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" id="Reviews-tab" data-bs-toggle="tab" href="#Reviews">Reviews (3)</a>
+                                                <a class="nav-link" id="Reviews-tab" data-bs-toggle="tab" href="#Reviews">Reviews ({{ reviews.count}})</a>
                                             </li>
                                         </ul>
                                         <div class="tab-content shop_info_tab entry-main-content">
@@ -268,126 +268,63 @@
                                                         <div class="col-lg-8">
                                                             <h4 class="mb-30">Customer questions & answers</h4>
                                                             <div class="comment-list">
+                                                                {% for r, width in reviews_with_width %}
                                                                 <div class="single-comment justify-content-between d-flex mb-30">
                                                                     <div class="user justify-content-between d-flex">
                                                                         <div class="thumb text-center">
                                                                             <img src="assets/imgs/blog/author-2.png" alt="" />
-                                                                            <a href="#" class="font-heading text-brand">Sienna</a>
+                                                                            <a href="#" class="font-heading text-brand">{{r.user.username|title}}</a>
                                                                         </div>
                                                                         <div class="desc">
                                                                             <div class="d-flex justify-content-between mb-10">
                                                                                 <div class="d-flex align-items-center">
-                                                                                    <span class="font-xs text-muted">December 4, 2022 at 3:12 pm </span>
+                                                                                    <span class="font-xs text-muted">{{r.date|date:"d M, Y"}}</span>
                                                                                 </div>
                                                                                 <div class="product-rate d-inline-block">
-                                                                                    <div class="product-rating" style="width: 100%"></div>
+                                                                                    <div class="product-rating" style="width: {{width}}%"></div>
                                                                                 </div>
                                                                             </div>
-                                                                            <p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, suscipit exercitationem accusantium obcaecati quos voluptate nesciunt facilis itaque modi commodi dignissimos
-                                                                                sequi repudiandae minus ab deleniti totam officia id incidunt? <a href="#" class="reply">Reply</a></p>
+                                                                            <p class="mb-10">{{ r.review }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="single-comment justify-content-between d-flex mb-30 ml-30">
-                                                                    <div class="user justify-content-between d-flex">
-                                                                        <div class="thumb text-center">
-                                                                            <img src="assets/imgs/blog/author-3.png" alt="" />
-                                                                            <a href="#" class="font-heading text-brand">Brenna</a>
-                                                                        </div>
-                                                                        <div class="desc">
-                                                                            <div class="d-flex justify-content-between mb-10">
-                                                                                <div class="d-flex align-items-center">
-                                                                                    <span class="font-xs text-muted">December 4, 2022 at 3:12 pm </span>
-                                                                                </div>
-                                                                                <div class="product-rate d-inline-block">
-                                                                                    <div class="product-rating" style="width: 80%"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, suscipit exercitationem accusantium obcaecati quos voluptate nesciunt facilis itaque modi commodi dignissimos
-                                                                                sequi repudiandae minus ab deleniti totam officia id incidunt? <a href="#" class="reply">Reply</a></p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="single-comment justify-content-between d-flex">
-                                                                    <div class="user justify-content-between d-flex">
-                                                                        <div class="thumb text-center">
-                                                                            <img src="assets/imgs/blog/author-4.png" alt="" />
-                                                                            <a href="#" class="font-heading text-brand">Gemma</a>
-                                                                        </div>
-                                                                        <div class="desc">
-                                                                            <div class="d-flex justify-content-between mb-10">
-                                                                                <div class="d-flex align-items-center">
-                                                                                    <span class="font-xs text-muted">December 4, 2022 at 3:12 pm </span>
-                                                                                </div>
-                                                                                <div class="product-rate d-inline-block">
-                                                                                    <div class="product-rating" style="width: 80%"></div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <p class="mb-10">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, suscipit exercitationem accusantium obcaecati quos voluptate nesciunt facilis itaque modi commodi dignissimos
-                                                                                sequi repudiandae minus ab deleniti totam officia id incidunt? <a href="#" class="reply">Reply</a></p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                                {% endfor %}
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <h4 class="mb-30">Customer reviews</h4>
                                                             <div class="d-flex mb-30">
-                                                                <div class="product-rate d-inline-block mr-15">
-                                                                    <div class="product-rating" style="width: 90%"></div>
+                                                                <h6>{{ average_rating.rating|floatformat }} out of 5.0</h6>
+                                                            </div>
+                                                            {% for rc in rating_counts reversed %}
+                                                            <div class="progress{% if forloop.last %} mb-30{% endif %}">
+                                                                <span>{{ rc.rating }} star</span>
+                                                                <div class="progress-bar" role="progressbar" style="width: auto;" aria-valuenow="{{ rc.count }}" aria-valuemin="0" aria-valuemax="100">
+                                                                    {{ rc.count }}
                                                                 </div>
-                                                                <h6>4.8 out of 5</h6>
                                                             </div>
-                                                            <div class="progress">
-                                                                <span>5 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <span>4 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <span>3 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
-                                                            </div>
-                                                            <div class="progress">
-                                                                <span>2 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
-                                                            </div>
-                                                            <div class="progress mb-30">
-                                                                <span>1 star</span>
-                                                                <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
-                                                            </div>
-                                                            <a href="#" class="font-xs text-muted">How are ratings calculated?</a>
+                                                            {% endfor %}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <!--comment form-->
+                                                {% if request.user.is_authenticated %}
+                                                {% if make_review  %}
                                                 <div class="comment-form">
-                                                    <h4 class="mb-15">Add a review</h4>
-                                                    <div class="product-rate d-inline-block mb-30"></div>
+                                                    <h4 class="mb-15 add-review">Add a review</h4>
                                                     <div class="row">
                                                         <div class="col-lg-8 col-md-12">
-                                                            <form class="form-contact comment_form" action="#" id="commentForm">
+                                                            <form class="form-contact comment_form hide-comment-form" action="{% url 'core:ajax-add-review' p.pid %}" id="commentForm" method="POST">
+                                                                {% csrf_token %}
                                                                 <div class="row">
                                                                     <div class="col-12">
                                                                         <div class="form-group">
-                                                                            <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9" placeholder="Write Comment"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6">
-                                                                        <div class="form-group">
-                                                                            <input class="form-control" name="name" id="name" type="text" placeholder="Name" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6">
-                                                                        <div class="form-group">
-                                                                            <input class="form-control" name="email" id="email" type="email" placeholder="Email" />
+                                                                            {{ review_form.review }}
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-12">
                                                                         <div class="form-group">
-                                                                            <input class="form-control" name="website" id="website" type="text" placeholder="Website" />
+                                                                            {{ review_form.rating }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -398,23 +335,28 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {% endif %}
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt-60">
+                                    {% if products %}
                                     <div class="col-12">
                                         <h2 class="section-title style-1 mb-30">Related products</h2>
                                     </div>
+                                    {% endif %}
                                     <div class="col-12">
                                         <div class="row related-products">
+                                            {% for p in products %}
                                             <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                                                 <div class="product-cart-wrap hover-up">
                                                     <div class="product-img-action-wrap">
                                                         <div class="product-img product-img-zoom">
-                                                            <a href="shop-product-right.html" tabindex="0">
-                                                                <img class="default-img" src="assets/imgs/shop/product-2-1.jpg" alt="" />
-                                                                <img class="hover-img" src="assets/imgs/shop/product-2-2.jpg" alt="" />
+                                                            <a href="{% url 'core:product-detail' p.pid %}" tabindex="0">
+                                                                <img class="default-img" src="{{ p.primary_image_url }}" alt="" />
+                                                                <img class="hover-img" src="{{ p.primary_image_url }}" alt="" />
                                                             </a>
                                                         </div>
                                                         <div class="product-action-1">
@@ -430,7 +372,7 @@
                                                         <div class="product-category">
                                                           <a href="{% url 'core:product-detail' p.pid %}">{{ p.category.title }}</a>
                                                         </div>
-                                                        <h2><a href="shop-product-right.html">{{ p.title }}</a></h2>
+                                                        <h2><a href="{% url 'core:product-detail' p.pid %}" tabindex="0">{{ p.title }}</a></h2>
                                                         <div class="product-rate-cover">
                                                             <i class="fas fa-star text-warning"></i>
                                                             <span class="font-small ml-5 text-muted"> ({{ p.reviews.all.count }})</span>
@@ -440,7 +382,7 @@
                                                             {% if p.vendor %}
                                                             <span class="font-small text-muted">{% trans "By"%} <a href="{% url 'core:vendor-detail' p.vendor.vid %}">{{p.vendor.title}}</a></span>
                                                             {% else %}
-                                                            <span class="font-small text-muted">{% trans "By"%} <a href="">{% trans "Destiny Franks"%}</a></span>
+                                                            <span class="font-small text-muted">{% trans "By Unknown"%}</span>
                                                             {% endif %}
                                                         </div>
                                                         <div class="product-card-bottom">
@@ -464,6 +406,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
