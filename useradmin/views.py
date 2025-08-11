@@ -10,12 +10,18 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.db import transaction
-
+from django.utils.translation import gettext as _
 import datetime
 
 # Create your views here.
 @login_required
 def dashboard(request):
+    # Kiểm tra quyền vendor
+    if request.user.role != "vendor":
+        return render(request, "useradmin/not_vendor.html", {
+            "error_message": _("Bạn cần đăng nhập dưới quyền vendor.")
+        })
+        
     revenue = CartOrder.objects.aggregate(price=Sum(AMOUNT))
     total_orders_count = CartOrder.objects.all()
     all_products = Product.objects.all()
