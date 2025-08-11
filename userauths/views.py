@@ -12,6 +12,7 @@ def register_view(request):
         if form.is_valid():
             new_user = form.save()
             username = form.cleaned_data.get("username")
+            role = form.cleaned_data.get("role")
             messages.success(
                 request,
                 _(f"Hello {username}, your account was created successfully.")
@@ -21,7 +22,10 @@ def register_view(request):
             )
             if new_user:
                 login(request, new_user)
-                return redirect("core:index")
+                if role == "vendor":
+                    return redirect("useradmin:dashboard")
+                else:
+                    return redirect("core:index")
     else:
         form = UserRegisterForm()
     return render(request, "userauths/sign-up.html", {"form": form})
@@ -30,7 +34,10 @@ def register_view(request):
 def login_view(request):
     if request.user.is_authenticated:
         messages.warning(request, _("You are already logged in."))
-        return redirect("core:index")
+        if request.user.role == "vendor":
+            return redirect("useradmin:dashboard")
+        else:
+            return redirect("core:index")
 
     if request.method == "POST":
         email = request.POST.get("email")
@@ -41,8 +48,10 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, _("Login successfully!"))
-                next_url = request.GET.get("next", 'core:index')
-                return redirect(next_url)
+                if user.role == "vendor":
+                    return redirect("useradmin:dashboard")
+                else:
+                    return redirect("core:index")
             else:
                 messages.warning(request, _("User does not exist. Create an account."))
         except:
@@ -53,7 +62,10 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, f"Login successfully!")
-            return redirect("core:index")
+            if user.role == "vendor":
+                return redirect("useradmin:dashboard")
+            else:
+                return redirect("core:index")
         else:
             messages.warning(request, "User does not exist. Create an account.")
 
