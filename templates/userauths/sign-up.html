@@ -46,6 +46,13 @@
                                             <div class="form-group">
                                                 {{form.password2}}
                                             </div>
+                                            <div class="form-group">
+                                                <label for="id_role" class="font-weight-bold">{% trans "Account Type" %}</label>
+                                                <select name="role" id="id_role" class="form-control">
+                                                    <option value="customer">{% trans "Customer - I want to buy products" %}</option>
+                                                    <option value="vendor">{% trans "Vendor - I want to sell products" %}</option>
+                                                </select>
+                                            </div>
                                             <div class="form-group mb-30">
                                                 <button type="submit" class="btn btn-fill-out btn-block hover-up font-weight-bold" name="login">{% trans "Submit & Register" %}</button>
                                             </div>
