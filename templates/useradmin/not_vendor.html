@@ -1,0 +1,21 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Yêu cầu quyền Vendor" %}</title>
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="alert alert-danger text-center">
+        {{ error_message }}
+    </div>
+    <div class="text-center">
+        <a href="{% url 'userauths:sign-in' %}" class="btn btn-primary btn-lg">
+            {% trans "Back" %}
+        </a>
+    </div>
+</div>
